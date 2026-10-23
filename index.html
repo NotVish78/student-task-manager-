@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Task Manager</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="hero-actions">
+    <button id="notifyBtn" type="button">Enable Notifications</button>
+    <button id="themeBtn" type="button">Dark Mode</button>
+  </div>
+  <h1>Student Task Manager</h1>
+  <p class="subtitle">Plan assignments. Track deadlines. Stay on top of your semester.</p>
+  <p id="quote"></p>
+</header>
+
+<div class="container">
+
+  <!-- Attention banner (overdue / due soon / stale) -->
+  <div class="card alerts" id="alerts" style="display:none;"></div>
+
+  <!-- Stats -->
+  <div class="card">
+    <div class="stats">
+      <div class="stat s-total"><h2 id="totalCount">0</h2><p>Total</p></div>
+      <div class="stat s-done"><h2 id="doneCount">0</h2><p>Completed</p></div>
+      <div class="stat s-pending"><h2 id="pendingCount">0</h2><p>Pending</p></div>
+      <div class="stat s-overdue"><h2 id="overdueCount">0</h2><p>Overdue</p></div>
+      <div class="stat s-stale"><h2 id="staleCount">0</h2><p>Stale</p></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Overall progress</span><span id="progressText">0%</span></div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+  </div>
+
+  <!-- Add / Edit form -->
+  <div class="card">
+    <h3 id="formHeading">Add New Task</h3>
+    <form id="taskForm" novalidate>
+      <div class="form-grid">
+        <div>
+          <label for="title">Task Title</label>
+          <input id="title" type="text" placeholder="e.g. Finish JS Experiment 4">
+          <span id="titleError" class="error"></span>
+        </div>
+        <div>
+          <label for="subject">Subject</label>
+          <input id="subject" type="text" placeholder="e.g. Web Technology">
+          <span id="subjectError" class="error"></span>
+        </div>
+        <div>
+          <label for="dueDate">Due Date</label>
+          <input id="dueDate" type="date">
+          <span id="dueDateError" class="error"></span>
+        </div>
+        <div>
+          <label for="priority">Priority</label>
+          <select id="priority">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <span class="error"></span>
+        </div>
+      </div>
+      <div class="form-buttons">
+        <button type="submit" id="submitBtn">Add Task</button>
+        <button type="button" id="cancelBtn" class="btn-gray" style="display:none;">Cancel Edit</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Search / Filter / Sort -->
+  <div class="card">
+    <div class="toolbar">
+      <input id="search" type="text" placeholder="Search by title or subject">
+      <select id="statusFilter">
+        <option value="All">All Tasks</option>
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Overdue">Overdue</option>
+        <option value="Due Today">Due Today</option>
+        <option value="Due Soon">Due Soon (1-2 days)</option>
+        <option value="Stale">Stale</option>
+      </select>
+      <select id="priorityFilter">
+        <option value="All">All Priorities</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <select id="sortSelect">
+        <option value="due">Sort: Due date</option>
+        <option value="priority">Sort: Priority</option>
+        <option value="newest">Sort: Newest first</option>
+        <option value="oldest">Sort: Oldest first</option>
+      </select>
+    </div>
+    <div class="toolbar tools">
+      <label class="inline-label" for="staleSelect">Mark as stale after</label>
+      <select id="staleSelect" class="small-select">
+        <option value="3">3 days</option>
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
+      </select>
+      <span class="spacer"></span>
+      <button id="demoBtn" class="btn-gray" type="button">Add Sample Tasks</button>
+      <button id="exportBtn" class="btn-gray" type="button">Export</button>
+      <button id="importBtn" class="btn-gray" type="button">Import</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none;">
+      <button id="clearCompleted" class="btn-red" type="button">Clear Completed</button>
+    </div>
+  </div>
+
+  <!-- Task list -->
+  <div class="card">
+    <h3>My Tasks</h3>
+    <ul id="taskList"></ul>
+  </div>
+
+</div>
+
+<!-- Toast notifications appear here -->
+<div id="toasts"></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
