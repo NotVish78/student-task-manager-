@@ -12,9 +12,9 @@
     <button id="notifyBtn" type="button">Enable Notifications</button>
     <button id="themeBtn" type="button">Dark Mode</button>
   </div>
-  <h1>Student Task Manager</h1>
+  <div class="hero-inner"><p class="eyebrow">VISHWAS / STUDENT PLANNER</p><h1>Student Task Manager<span>.</span></h1>
   <p class="subtitle">Plan assignments. Track deadlines. Stay on top of your semester.</p>
-  <p id="quote"></p>
+  <p id="quote">One task at a time. You have got this.</p></div>
 </header>
 
 <div class="container">
@@ -38,18 +38,19 @@
   </div>
 
   <!-- Add / Edit form -->
-  <div class="card">
+  <div class="card form-card">
+    <p class="section-kicker">PLAN YOUR NEXT STEP</p>
     <h3 id="formHeading">Add New Task</h3>
     <form id="taskForm" novalidate>
       <div class="form-grid">
         <div>
           <label for="title">Task Title</label>
-          <input id="title" type="text" placeholder="e.g. Finish JS Experiment 4">
+          <input id="title" type="text" maxlength="60" aria-describedby="titleError" placeholder="e.g. Finish JS Experiment 4">
           <span id="titleError" class="error"></span>
         </div>
         <div>
           <label for="subject">Subject</label>
-          <input id="subject" type="text" placeholder="e.g. Web Technology">
+          <input id="subject" type="text" maxlength="60" aria-describedby="subjectError" placeholder="e.g. Web Technology">
           <span id="subjectError" class="error"></span>
         </div>
         <div>
@@ -76,9 +77,10 @@
 
   <!-- Search / Filter / Sort -->
   <div class="card">
+    <div class="section-heading"><div><p class="section-kicker">YOUR WORKSPACE</p><h3>Keep things in focus</h3></div><button id="resetFilters" class="btn-gray" type="button">Reset filters</button></div>
     <div class="toolbar">
-      <input id="search" type="text" placeholder="Search by title or subject">
-      <select id="statusFilter">
+      <input id="search" aria-label="Search tasks" type="text" placeholder="Search by title or subject">
+      <select id="statusFilter" aria-label="Filter by status">
         <option value="All">All Tasks</option>
         <option value="Pending">Pending</option>
         <option value="Completed">Completed</option>
@@ -87,13 +89,13 @@
         <option value="Due Soon">Due Soon (1-2 days)</option>
         <option value="Stale">Stale</option>
       </select>
-      <select id="priorityFilter">
+      <select id="priorityFilter" aria-label="Filter by priority">
         <option value="All">All Priorities</option>
         <option value="High">High</option>
         <option value="Medium">Medium</option>
         <option value="Low">Low</option>
       </select>
-      <select id="sortSelect">
+      <select id="sortSelect" aria-label="Sort tasks">
         <option value="due">Sort: Due date</option>
         <option value="priority">Sort: Priority</option>
         <option value="newest">Sort: Newest first</option>
@@ -118,14 +120,15 @@
 
   <!-- Task list -->
   <div class="card">
-    <h3>My Tasks</h3>
+    <div class="section-heading"><h3>My Tasks</h3><span id="visibleCount" class="result-count" aria-live="polite"></span></div>
     <ul id="taskList"></ul>
   </div>
 
 </div>
 
 <!-- Toast notifications appear here -->
-<div id="toasts"></div>
+<footer>Made by Vishwas P <span>HTML / CSS / JavaScript</span></footer>
+<div id="toasts" role="status" aria-live="polite"></div>
 
 <script src="js/script.js"></script>
 </body>

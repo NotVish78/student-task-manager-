@@ -2,7 +2,7 @@
 
 A mini project built with **HTML, CSS and JavaScript** (no frameworks, no build step) to help students plan assignments, track deadlines and stay organised.
 
-**Live demo:** https://notvish78.github.io/student-task-manager/ *(after enabling GitHub Pages, see below)*
+**Live demo:** https://notvish78.github.io/student-task-manager-/ *(after enabling GitHub Pages, see below)*
 
 ## Features
 
@@ -48,7 +48,7 @@ A mini project built with **HTML, CSS and JavaScript** (no frameworks, no build 
 - Arrays and objects: `push`, `filter`, `find`, `findIndex`, `splice`, `forEach`, `some`
 - DOM manipulation: `getElementById`, `createElement`, `appendChild`, `textContent`
 - Events: `submit`, `input`, `change`, `click` using `addEventListener`
-- Validation using regex, `trim()` and `preventDefault()`
+- Validation using length checks, `trim()` and `preventDefault()`
 - Local Storage with `JSON.stringify()` / `JSON.parse()`
 - Fetch API with `.then()`, `.catch()` and `response.ok`
 - Date handling, `setInterval()`, Notifications API, `Blob` / `FileReader` for export and import
@@ -70,8 +70,8 @@ student-task-manager/
 ## Run Locally
 
 ```bash
-git clone https://github.com/NotVish78/student-task-manager.git
-cd student-task-manager
+git clone https://github.com/NotVish78/student-task-manager-.git
+cd student-task-manager-
 ```
 
 Then open `index.html` in a browser, or in VS Code right-click `index.html` → **Open with Live Server**.
@@ -81,7 +81,7 @@ Then open `index.html` in a browser, or in VS Code right-click `index.html` → 
 1. Push the project to a GitHub repository.
 2. Go to **Settings → Pages**.
 3. Under **Build and deployment**, choose **Deploy from a branch**, select `main` and `/ (root)`, then click **Save**.
-4. After a minute, the site is live at `https://<your-username>.github.io/student-task-manager/`.
+4. After a minute, the site is live at `https://<your-username>.github.io/student-task-manager-/`.
 
 ## Author
 
@@ -91,4 +91,7 @@ GitHub: [@NotVish78](https://github.com/NotVish78)
 ## License
 
 Released under the [MIT License](LICENSE).
-# student-task-manager-
+
+## UI refinements
+
+The original purple theme and vanilla JavaScript structure are retained, with clearer card spacing, responsive form fields, keyboard focus outlines, a task result count and a reset-filters button. Task titles support normal punctuation and Unicode. Past deadlines can be entered for existing overdue work. Invalid saved JSON falls back safely; imported task records are validated before use.

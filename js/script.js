@@ -2,16 +2,42 @@
 const DAY = 24 * 60 * 60 * 1000;
 const PRIORITY_ORDER = { High: 0, Medium: 1, Low: 2 };
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let staleDays = Number(localStorage.getItem("staleDays")) || 7;
+// A damaged backup should not prevent the rest of the page from loading.
+function readSaved(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch (error) { return fallback; }
+}
+
+function validTask(t) {
+  return t && typeof t.title === "string" && t.title.trim().length >= 3 && t.title.length <= 60 &&
+    typeof t.subject === "string" && t.subject.trim().length > 0 && t.subject.length <= 60 &&
+    typeof t.dueDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.dueDate) &&
+    !Number.isNaN(Date.parse(t.dueDate)) && new Date(t.dueDate).toISOString().slice(0, 10) === t.dueDate &&
+    Object.hasOwn(PRIORITY_ORDER, t.priority) && typeof t.completed === "boolean";
+}
+
+const savedTasks = readSaved("tasks", []);
+let tasks = Array.isArray(savedTasks) ? savedTasks.filter(validTask) : [];
+let staleDays = Number(readSaved("staleDays", 7));
+if (![3, 7, 14].includes(staleDays)) staleDays = 7;
 let editId = null; // null = adding, otherwise id of the task being edited
 let lastDate = "";
 
 // Older saved tasks may not have createdAt, so fall back to their id (a timestamp)
-tasks.forEach(t => { if (!t.createdAt) t.createdAt = t.id; });
+tasks.forEach((t, i) => {
+  if (!Number.isFinite(t.createdAt)) t.createdAt = Number.isFinite(t.id) ? t.id : Date.now();
+  if (!Number.isFinite(t.id) || tasks.slice(0, i).some(other => other.id === t.id)) t.id = nextTaskId();
+});
+
+function nextTaskId() {
+  let id = Date.now();
+  while (tasks.some(t => t.id === id)) id++;
+  return id;
+}
 
 function saveTasks() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  try { localStorage.setItem("tasks", JSON.stringify(tasks)); }
+  catch (error) { showToast("Could not save. Export a backup before closing this tab.", "error"); }
 }
 
 // ---------- Date Helpers ----------
@@ -66,6 +92,7 @@ function showToast(message, type = "info") {
   toast.className = "toast " + type;
   toast.textContent = message;
   container.appendChild(toast);
+  while (container.children.length > 3) container.firstElementChild.remove();
 
   setTimeout(function () {
     toast.classList.add("hide");
@@ -115,8 +142,9 @@ function sendBrowserNotification(title, body, tag) {
 // Each reminder is sent once per task, per type, per day
 function checkReminders() {
   const today = todayString();
-  let sent = JSON.parse(localStorage.getItem("notified")) || [];
-  sent = sent.filter(key => key.startsWith(today)); // forget old days
+  let sent = readSaved("notified", []);
+  if (!Array.isArray(sent)) sent = [];
+  sent = sent.filter(key => typeof key === "string" && key.startsWith(today)); // forget old days
 
   const messages = [];
 
@@ -172,12 +200,12 @@ function validateForm(title, subject, dueDate) {
   let valid = true;
   document.querySelectorAll(".error").forEach(e => e.textContent = "");
 
-  if (!/^[A-Za-z0-9 .,\-_'()&:]{3,60}$/.test(title)) {
-    document.getElementById("titleError").textContent = "Title must be 3-60 valid characters";
+  if (title.length < 3 || title.length > 60) {
+    document.getElementById("titleError").textContent = "Title must be 3-60 characters";
     valid = false;
   }
-  if (!subject) {
-    document.getElementById("subjectError").textContent = "Subject is required";
+  if (!subject || subject.length > 60) {
+    document.getElementById("subjectError").textContent = "Subject is required (up to 60 characters)";
     valid = false;
   }
   if (!dueDate) {
@@ -200,7 +228,7 @@ document.getElementById("taskForm").addEventListener("submit", function (event) 
 
   if (editId === null) {
     const task = {
-      id: Date.now(),
+      id: nextTaskId(),
       title: title,
       subject: subject,
       dueDate: dueDate,
@@ -254,7 +282,8 @@ function startEdit(id) {
   document.getElementById("formHeading").textContent = "Edit Task";
   document.getElementById("submitBtn").textContent = "Update Task";
   document.getElementById("cancelBtn").style.display = "inline-block";
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.getElementById("title").focus();
+  document.getElementById("taskForm").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function resetForm() {
@@ -364,6 +393,7 @@ function render() {
   list.innerHTML = "";
 
   const visible = sortTasks(getVisibleTasks());
+  document.getElementById("visibleCount").textContent = `${visible.length} of ${tasks.length} tasks`;
 
   if (visible.length === 0) {
     const li = document.createElement("li");
@@ -484,7 +514,7 @@ document.getElementById("demoBtn").addEventListener("click", function () {
 
   samples.forEach(function (s, i) {
     tasks.push({
-      id: now + i,
+      id: nextTaskId(),
       title: s.title,
       subject: s.subject,
       dueDate: s.dueDate,
@@ -529,17 +559,17 @@ document.getElementById("importFile").addEventListener("change", function () {
 
       let added = 0;
       data.forEach(function (t) {
-        const valid = t && t.title && t.subject && t.dueDate && t.priority;
+        const valid = validTask(t);
         const exists = tasks.some(x => x.id === t.id);
         if (valid && !exists) {
           tasks.push({
-            id: t.id || Date.now() + added,
+            id: Number.isFinite(t.id) ? t.id : nextTaskId(),
             title: String(t.title),
             subject: String(t.subject),
             dueDate: t.dueDate,
             priority: t.priority,
             completed: Boolean(t.completed),
-            createdAt: t.createdAt || Date.now()
+            createdAt: Number.isFinite(t.createdAt) ? t.createdAt : Date.now()
           });
           added++;
         }
@@ -584,10 +614,18 @@ document.getElementById("themeBtn").addEventListener("click", function () {
   applyTheme(!document.body.classList.contains("dark"));
 });
 
+document.getElementById("resetFilters").addEventListener("click", function () {
+  document.getElementById("search").value = "";
+  document.getElementById("statusFilter").value = "All";
+  document.getElementById("priorityFilter").value = "All";
+  document.getElementById("sortSelect").value = "due";
+  render();
+});
+
 // ---------- Start ----------
-applyTheme(JSON.parse(localStorage.getItem("darkMode")) || false);
+applyTheme(readSaved("darkMode", false) === true);
 document.getElementById("staleSelect").value = String(staleDays);
-document.getElementById("dueDate").min = todayString();
+// Past dates are allowed so existing overdue assignments can be entered.
 updateNotifyBtn();
 loadQuote();
 lastDate = todayString();
@@ -598,7 +636,7 @@ checkReminders();
 setInterval(function () {
   if (todayString() !== lastDate) {
     lastDate = todayString();
-    document.getElementById("dueDate").min = lastDate;
+
     render();
   }
   checkReminders();
