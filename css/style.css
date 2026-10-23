@@ -37,7 +37,7 @@ body {
 .hero {
   background: linear-gradient(135deg, #4f46e5, #7c3aed 60%, #ec4899);
   color: #fff;
-  padding: 36px 20px 80px;
+  padding: 76px 24px 84px;
   text-align: center;
   position: relative;
 }
@@ -67,7 +67,7 @@ body {
 }
 .hero-actions button:hover { background: rgba(255, 255, 255, 0.35); }
 
-.container { max-width: 920px; margin: -50px auto 40px; padding: 0 16px; }
+.container { position: relative; max-width: 1100px; margin: -42px auto 40px; padding: 0 16px; }
 
 .card {
   background: var(--card);
@@ -267,4 +267,56 @@ ul { list-style: none; padding: 0; margin: 0; }
   .hero-actions { position: static; justify-content: center; margin-bottom: 12px; }
   #toasts { left: 16px; right: 16px; max-width: none; }
   .actions button { flex: 1; }
+}
+
+/* Small refinements to the original purple dashboard. */
+.hero { background: radial-gradient(ellipse at 95% 5%, #8b5cf6 0, transparent 52%), linear-gradient(120deg, #312e81, #5b35b9); text-align: left; }
+.hero-inner { max-width: 1020px; margin: auto; }
+.eyebrow { font-size: 11px; letter-spacing: 2px; font-weight: 700; opacity: .75; margin: 0 0 16px; }
+.hero h1 { font-size: clamp(1.8rem, 4vw, 2.65rem); letter-spacing: -1.2px; }
+.hero h1 span { color: #c4b5fd; }
+.hero .subtitle { margin-top: 12px; line-height: 1.6; }
+#quote { margin: 18px 0 0; font-size: 13px; opacity: .7; }
+.card { border: 1px solid var(--border); padding: 26px; box-shadow: 0 4px 20px #0f172a06; border-radius: 16px; }
+.stats { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.stat { text-align: left; padding: 18px; border-top-width: 3px; }
+.stat h2 { font-size: 2rem; font-weight: 650; }
+.stat p { font-size: 10px; letter-spacing: .8px; }
+.progress { height: 7px; }
+.progress-bar { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.section-kicker { color: var(--primary); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; margin: 0 0 8px; }
+body.dark .section-kicker { color: #c4b5fd; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.section-heading h3 { margin-bottom: 0; }
+.form-grid { grid-template-columns: 1.5fr 1.2fr 1fr .8fr; }
+.form-buttons { margin-top: 14px; }
+.btn-gray { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-gray:hover { background: var(--border); }
+.actions .btn-orange { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+.actions .btn-red, .tools .btn-red { background: transparent; color: var(--red); border: 1px solid var(--border); }
+.actions .btn-red:hover, .tools .btn-red:hover { background: #fee2e2; color: #991b1b; }
+.task { background: var(--card); border: 1px solid var(--border); border-left-width: 4px; padding: 20px; }
+.task > div:first-child { min-width: 0; flex: 1; }
+.title, .chip { overflow-wrap: anywhere; }
+.result-count { color: var(--muted); font-size: 12px; }
+.empty { border: 1px dashed var(--border); border-radius: 12px; padding: 44px 16px; line-height: 1.8; background: var(--bg); }
+footer { max-width: 1068px; margin: 0 auto 24px; padding: 0 16px; display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; }
+button:focus-visible { outline: 3px solid #a78bfa; outline-offset: 3px; }
+body.dark { color-scheme: dark; }
+@media (max-width: 800px) {
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { gap: 8px; } .stat { padding: 12px; }
+  .stat p { font-size: 9px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 22px 24px 72px; } .hero-actions { justify-content: flex-start; margin-bottom: 28px; }
+  .card { padding: 18px; } .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stat h2 { font-size: 1.6rem; } .form-grid { grid-template-columns: 1fr; gap: 8px; }
+  .toolbar { gap: 8px; } .toolbar input, .toolbar select { min-width: 0; flex-basis: 100%; }
+  .tools .small-select { flex-basis: auto; } .spacer { display: none; }
+  .section-heading { align-items: flex-start; } .section-heading button { font-size: 12px; padding: 8px; }
+  footer { flex-wrap: wrap; } .task { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
